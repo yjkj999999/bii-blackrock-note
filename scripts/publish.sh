@@ -83,11 +83,17 @@ else
 fi
 
 hd "1b. 退休旧技能 $OLD_SLUG"
-if clawhub inspect "$OLD_SLUG" >/dev/null 2>&1; then
+# 实测两种终态都会被 clawhub inspect 拒绝，必须分开识别，否则重跑会误报"已不在册"：
+#   · 新发布但未过审 → "hidden by moderation (pending.publication)"
+#   · 已 hide / 已删除 → "Skill not found"
+HIDE_CHK="$(clawhub inspect "$OLD_SLUG" 2>&1)"
+if printf '%s' "$HIDE_CHK" | grep -qi "hidden by moderation"; then
+  ok "$OLD_SLUG 已处于隐藏态"
+elif printf '%s' "$HIDE_CHK" | grep -qi "not found"; then
+  ok "$OLD_SLUG 已不在册"
+else
   clawhub hide --yes "$OLD_SLUG" && ok "已 hide ${OLD_SLUG}（clawhub unhide ${OLD_SLUG} 可回滚）" \
                                  || no "hide 失败（可稍后手动执行）"
-else
-  ok "$OLD_SLUG 已不在册"
 fi
 
 # ── 2. GitHub ──────────────────────────────────────────────────────────────
