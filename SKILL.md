@@ -4,7 +4,7 @@ description: 把 BII 范式的个股研判简报（A4 横向 · 封面+9 正册+
 homepage: https://github.com/yjkj999999/bii-blackrock-note
 author: 王东杰 (Wang Dong Jie) · yjkj999999
 license: MIT-0
-version: 1.0.1
+version: 1.0.2
 agent_created: true
 read_when:
   - 用户要求把 BII / 个股简报做成贝莱德智库（BlackRock）风格
@@ -14,12 +14,14 @@ read_when:
 metadata:
   openclaw:
     emoji: 🖤
-    version: "1.0.1"
+    version: "1.0.2"
 ---
 
 > **版本谱系**：本技能自 v1.0.1 起**取代** `brand-pdf-deck-replica`（已退休）。
 > 后者面向「复刻**外部**品牌 PDF + 反解图表数值」；本技能面向「自家 BII 简报换品牌皮 + 三格式交付」，
 > 是把前者的**视觉体系与交付管线**并进 BII 内容引擎后的合并产物。两份并存会造成路由歧义，故只保留本技能。
+>
+> **v1.0.2**：把维护者发布脚本移出技能目录（分发载荷里不应有能改远端状态的工具）。
 
 # BII 简报 × 贝莱德智库风格（内容不动 · 只换视觉体系）
 
@@ -203,22 +205,36 @@ $PY ~/.workbuddy/skills/bii-blackrock-note/scripts/check_br.py out.html \
   GitHub 历史版本取用，不要再与本技能并列挂在技能根目录下。
 - 下游：`present_files` 交付
 
-## 发布
+## 发布（维护者用）
+
+本技能**不自带发布脚本**。维护者工具放进来有三个坏处，v1.0.1 三个都中了：
+
+1. 每个安装者都会被 ClawHub 安全审计判为 `Review`（「ships a live maintainer publishing script that can mutate ClawHub and GitHub state」）；
+2. 本地副本只要领先于已发布版本，就会把**旧修订**当新版发出去（v1.0.1 发出去的 `publish.sh` 是修复前的坏版本，含 2 处 `unbound variable`）；
+3. 分发载荷里多一份与使用者无关的危险工具。
+
+统一改用通用发布器：
 
 ```bash
-bash ~/.workbuddy/skills/bii-blackrock-note/scripts/publish.sh          # 干跑，只体检
-bash ~/.workbuddy/skills/bii-blackrock-note/scripts/publish.sh --go     # 真发布（ClawHub + GitHub）
+export GITHUB_TOKEN=ghp_xxx      # 只用于建仓/查仓；绝不落盘
+bash ~/.workbuddy/skills/skill-publish-clawhub-github/scripts/publish_skill.sh \
+  --dir ~/.workbuddy/skills/bii-blackrock-note \
+  --slug bii-blackrock-note \
+  --name "BII 简报 × 贝莱德智库风格（pptx+pdf+html 三格式）" \
+  --version <新版本号> \
+  --gh-repo bii-blackrock-note \
+  --go
 ```
 
-发布目标：
+不加 `--go` 是干跑（体检 + 打印动作）。
 
 | 渠道 | 标识 | 说明 |
 |---|---|---|
-| ClawHub | `bii-blackrock-note` | 作者 `yjkj999999`；若旧 slug 存在会自动 `hide` |
-| GitHub | `yjkj999999/bii-blackrock-note` | SSH `git@github.com:...`（API 走 `--noproxy '*'` 直连） |
+| ClawHub | `bii-blackrock-note` | 作者 `yjkj999999` |
+| GitHub | `yjkj999999/bii-blackrock-note` | SSH 推送；GitHub API 调用必须 `--noproxy '*'` |
 
-> **网络注意**：本机 `https_proxy` 对 `api.github.com` 的 CONNECT 会 502，
-> 但**直连可用**。脚本里所有 GitHub API 调用都带 `--noproxy '*'`。
+> **改动完必须复读校验**：同一条消息里对同一文件并行发两个 Edit 会互相覆盖，工具仍报 success。
+> v1.0.1 的 frontmatter 就是这样静默丢失的。
 
 ## 本地许可
 

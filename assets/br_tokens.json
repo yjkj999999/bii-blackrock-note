@@ -1,6 +1,6 @@
 {
   "_comment": "贝莱德智库（BlackRock Investment Institute）风格令牌 —— 单一来源。theme_inject.py / check_br.py 都从这里读，禁止在脚本里重复硬编码。",
-  "version": "1.0.1",
+  "version": "1.0.2",
 
   "brand": {
     "black": "#000000",

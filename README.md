@@ -37,11 +37,16 @@ bash ~/.workbuddy/skills/bii-blackrock-note/scripts/pipeline.sh \
 - poppler（`pdfinfo/pdftotext/pdftoppm`）
 - python-pptx + Pillow
 
-## 发布
+## 发布（维护者用）
+
+本技能**不自带发布脚本**——维护者工具不属于分发载荷。用通用发布器：
 
 ```bash
-bash scripts/publish.sh          # 干跑：只体检 + 探测目标
-bash scripts/publish.sh --go     # 真发布（ClawHub + GitHub）
+export GITHUB_TOKEN=ghp_xxx
+bash ~/.workbuddy/skills/skill-publish-clawhub-github/scripts/publish_skill.sh \
+  --dir ~/.workbuddy/skills/bii-blackrock-note --slug bii-blackrock-note \
+  --name "BII 简报 × 贝莱德智库风格（pptx+pdf+html 三格式）" \
+  --version <新版本号> --gh-repo bii-blackrock-note --go
 ```
 
 | 渠道 | 标识 |
@@ -53,6 +58,7 @@ bash scripts/publish.sh --go     # 真发布（ClawHub + GitHub）
 
 | 版本 | 说明 |
 |---|---|
+| **1.0.2** | 把维护者发布脚本移出技能目录。原因：分发载荷里的远端写操作工具会让每个安装者被 ClawHub 安全审计判为 `Review`，且本地副本领先于已发布版本时会把**旧修订**当新版发出去 |
 | **1.0.1** | 首个公开发布版。**取代并退休 `brand-pdf-deck-replica`**：把后者的视觉体系与三格式交付管线并进 BII 内容引擎 |
 | — | ~~`brand-pdf-deck-replica@1.0.1`~~ 已 hide 下架（`clawhub unhide` 可回滚）。其「外部品牌 PDF 复刻 + 图表数值反解」能力不属本技能职责范围 |
 
