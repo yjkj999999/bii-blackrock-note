@@ -1,6 +1,9 @@
 /* ══════════════════════════════════════════════════════════════════════════
    贝莱德智库风格主题层 · BlackRock Investment Institute style overlay
-   v1.0.1 · 由 theme_inject.py 注入到 BII 简报 HTML 的最末尾（优先级最高）
+   v1.1.0 · 由 theme_inject.py 注入到 BII 简报 HTML 的最末尾（优先级最高）
+   v1.1.0 变更：吸收《2026Q4 全球投资展望》全要素研读——新增第六节 opt-in 品牌组件
+   （估计区 / 状态徽章 / 观点量尺 / 2×2 象限 / 三栏映射 / 分位带）与 3 个令牌变量。
+   组件仅当源稿显式使用对应 class 时生效，不进 required_structures，不影响 22 页门禁。
 
    职责边界：
      ① 品牌令牌重定义（:root）
@@ -28,6 +31,10 @@
   /* ── 贝莱德品牌扩展 ── */
   --br-red:#FF4713; --br-purple:#9062BC; --br-pink:#FC9BB3;
   --br-green:#008B5C; --br-gray:#D9D9D9; --br-tint:#FFF5CC;
+  /* v1.1.0 · 2026Q4 实测扩展（见 docs/br2026q4_design_study.md） */
+  --by2:#FEDC00;            /* 深黄（第二黄系列，柱状第二系列） */
+  --br-pl:#9E79D9;          /* 浅紫（线/填充用紫，实测 p9/p12/p14/p16） */
+  --br-ax:#808080;          /* 轴线/来源文字灰（实测主轴灰） */
   --br-spine:1.3mm; --br-band:6.2mm;
 }
 
@@ -63,6 +70,9 @@
 /* ══ 二、封面：黑书脊 + 高色带 + 黄色品牌签 ══════════════════════════ */
 
 .cover{
+  /* 与 .page 同款收紧（0.6/0.8mm ≈ −5.3px）：抵消 cv-foot 右件 font-size:11px 的
+     行盒 +4px 与边线 +1.5px。22 页稿封面余量大掩盖了此缺口，卡线封面稿实测爆 +4.3px。 */
+  padding-top:15.4mm; padding-bottom:10.2mm;
   background-image:
     linear-gradient(90deg,#000 0 4.6mm,transparent 4.6mm),
     linear-gradient(180deg,#000 0 10mm,transparent 10mm);
@@ -185,7 +195,7 @@ table.hm th.hm-grp{ border-bottom:1.5px solid #000; }
   position:relative;
   display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end;
   column-gap:16px; border-top:1.5px solid #000;
-  margin-top:8px;                     /* 原 20px → 收回 12px，抵消下方「风格声明」新增的一行 */
+  margin-top:20px;                    /* 与源稿一致；「风格声明」已出流（absolute top:100%），零净增量铁律 */
 }
 .cv-foot > span:first-child{ grid-column:1; grid-row:1; }
 .cv-foot > span:nth-child(2){
@@ -197,7 +207,66 @@ table.hm th.hm-grp{ border-bottom:1.5px solid #000; }
   font-size:8px; color:var(--t3); line-height:1.2; letter-spacing:.04em;
   font-family:ui-monospace,SFMono-Regular,monospace; white-space:nowrap;
 }
-.br-style-note{ display:block; margin-top:4px; color:#A0A0A0; font-size:8px; line-height:1.5; }
+.br-style-note{ position:absolute; left:0; top:100%; margin-top:1px; color:#A0A0A0; font-size:8px; line-height:1.5; white-space:nowrap; }
 
 /* 打印：确保底色与品牌色被完整印出 */
 html{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* ══ 六、2026Q4 研读新增 · opt-in 品牌组件（v1.1.0）══════════════════════
+   来源：docs/br2026q4_design_study.md（MKTG0926-M-5961218-EXP0927 全要素实测）。
+   纪律：
+   (a) 仅当源稿显式使用对应 class 时才生效——不使用则零影响，22 页门禁不受牵连；
+   (b) 全部遵守「零净增量铁律」：胶囊/徽章一律 display:block + width:fit-content；
+       面板分隔一律 inset box-shadow 或背景渐变，不用真实 border 占层高；
+   (c) 色值全部来自 br_tokens.json 的 bii2026q4.measured_colors，禁止另造。 */
+
+/* 6.1 估计区：预测段浅底 + 左侧虚线界（对应 p7 对数趋势估计段 / p15 估计年份） */
+.br-est{
+  position:relative;
+  background:linear-gradient(180deg, rgba(254,220,0,.10), rgba(254,220,0,.10));
+  box-shadow:inset 1.5px 0 0 0 var(--br-ax);
+}
+.br-est::after{
+  content:'估计'; position:absolute; right:0; top:-14px;
+  font-size:8px; letter-spacing:.14em; color:var(--br-ax); line-height:1.2;
+}
+
+/* 6.2 信号状态徽章（p8 信号面板表）：乐观=黄底黑字；观察中=描边灰字 */
+.br-sig{ display:block; width:-webkit-fit-content; width:fit-content;
+  padding:1px 7px; font-size:9px; font-weight:800; letter-spacing:.12em; line-height:1.3; }
+.br-sig.br-sig-pos{ background:var(--by); color:#000; }
+.br-sig.br-sig-watch{ background:transparent; color:var(--t2); box-shadow:inset 0 0 0 1px var(--br-ax); }
+
+/* 6.3 观点量尺（p17/p19/p20）：低配—中性—超配；.early=早期观点（空心点） */
+.br-gauge{ display:flex; align-items:center; gap:6px; line-height:1.2; }
+.br-gauge .br-g-lab{ font-size:8.5px; color:var(--br-ax); letter-spacing:.06em; }
+.br-gauge .br-g-track{ position:relative; width:64px; height:1.5px; background:var(--br-ax); }
+.br-gauge .br-g-dot{ position:absolute; top:50%; transform:translate(-50%,-50%);
+  width:9px; height:9px; border-radius:50%; background:var(--by); box-shadow:0 0 0 1.5px #000; }
+.br-gauge .br-g-dot.early{ background:transparent; box-shadow:0 0 0 1.5px var(--br-ax); }
+
+/* 6.4 2×2 象限（p9）：中线虚十字 + 四角标签位；容器需自带宽高 */
+.br-quad{ position:relative; }
+.br-quad::before{ content:''; position:absolute; left:0; right:0; top:50%;
+  border-top:1px dashed #BBBBBB; }
+.br-quad::after{ content:''; position:absolute; top:0; bottom:0; left:50%;
+  border-left:1px dashed #BBBBBB; }
+.br-quad .br-q-dot{ width:10px; height:10px; border-radius:50%; display:block; }
+.br-quad .br-q-dot.c-yellow{ background:var(--by); }
+.br-quad .br-q-dot.c-green{ background:var(--br-green); }
+.br-quad .br-q-dot.c-red{ background:var(--br-red); }
+.br-quad .br-q-dot.c-green-tint{ background:var(--br-green-tint2, #80C5AE); }
+.br-quad .br-q-dot.c-red-tint{ background:var(--br-red-tint2, #FFA389); }
+
+/* 6.5 三栏驱动映射（p16）：左列主题卡 → 彩色左规（inset，不占层高） */
+.br-map3{ display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1fr) minmax(0,1.4fr); column-gap:14px; }
+.br-map3 .br-theme-card{ box-shadow:inset 4px 0 0 0 var(--br-ax); }
+.br-map3 .br-theme-card.t-green{ box-shadow:inset 4px 0 0 0 var(--br-green); }
+.br-map3 .br-theme-card.t-purple{ box-shadow:inset 4px 0 0 0 var(--br-purple); }
+.br-map3 .br-theme-card.t-yellow{ box-shadow:inset 4px 0 0 0 var(--by); }
+.br-map3 .br-theme-card.t-pink{ box-shadow:inset 4px 0 0 0 var(--br-pink); }
+.br-map3 .br-theme-card.t-red{ box-shadow:inset 4px 0 0 0 var(--br-red); }
+
+/* 6.6 分位带（p15 IQR/十分位距）：鲑鱼色带填充 + 中值黑线（实测 #FFB5A1） */
+.br-iqr{ background:#FFB5A1; }
+.br-iqr .br-iqr-med{ box-shadow:inset 0 -1.5px 0 0 #000; }

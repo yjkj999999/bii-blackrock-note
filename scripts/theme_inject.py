@@ -153,12 +153,10 @@ def inject_footer_code(html, source_code, total_pages, style_note=None):
         code = ('<span class="br-code">文件编号 %s · 共 %d 页</span>'
                 % (source_code, total_pages))
         if kind == 'cv-foot' and style_note:
-            # 在第一个 span 收尾处插入风格声明（display:block，占一行）
-            i = inner.rfind('</span>')          # 第二个 span 的收尾
-            j = inner.rfind('</span>', 0, i)    # 第一个 span 的收尾
-            if j < 0:
-                raise SystemExit('!! 无法定位 .cv-foot 首个 span 的收尾')
-            inner = inner[:j] + '<span class="br-style-note">%s</span>' % style_note + inner[j:]
+            # 追加到 inner 末尾（br-code 之前）：声明 absolute 出流，不占 grid 轨道；
+            # 也不能插在两个 span 中间——那会让 nth-child(2) 失配，右件掉到第二行
+            # （22 页稿有封面余量掩盖了此 bug，10 页卡线稿实测爆页 +4.3px）
+            inner = inner + '<span class="br-style-note">%s</span>' % style_note
             stats['cover_notes'] += 1
         stats['footers'] += 1
         return '<div class="%s">%s%s</div>' % (kind, inner, code)

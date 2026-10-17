@@ -1,6 +1,6 @@
 {
   "_comment": "贝莱德智库（BlackRock Investment Institute）风格令牌 —— 单一来源。theme_inject.py / check_br.py 都从这里读，禁止在脚本里重复硬编码。",
-  "version": "1.0.2",
+  "version": "1.1.0",
 
   "brand": {
     "black": "#000000",
@@ -17,6 +17,21 @@
     "purple": "#9062BC",
     "pink": "#FC9BB3",
     "darkred": "#C00B28",
+    "yellowDeep": "#FEDC00",
+    "gold2": "#C49C04",
+    "goldDark": "#896E00",
+    "redDeep": "#E23E0F",
+    "burntOrange": "#CD4119",
+    "orangeHot": "#FF3D06",
+    "purpleLight": "#9E79D9",
+    "purpleTint": "#CFBCEC",
+    "peach": "#FFB76D",
+    "peachTint": "#FFD3A5",
+    "salmonBand": "#FFB5A1",
+    "greenTint2": "#80C5AE",
+    "redTint2": "#FFA389",
+    "pinkTint": "#FFD7CB",
+    "axisGray": "#808080",
     "gray": "#D9D9D9",
     "grayText": "#595959",
     "white": "#FFFFFF",
@@ -34,7 +49,68 @@
     "--t2": "#595959",
     "--t1": "#111111",
     "--up": "#CE2A0A",
-    "--dn": "#00704A"
+    "--dn": "#00704A",
+    "--by2": "#FEDC00",
+    "--br-pl": "#9E79D9",
+    "--br-ax": "#808080"
+  },
+
+  "bii2026q4": {
+    "_comment": "贝莱德《2026年第四季度全球投资展望》（MKTG0926-M-5961218-EXP0927，21页）全要素实测。研读依据与明细见 docs/br2026q4_design_study.md。色值均为 pdftoppm 位图 + Pillow 全分辨率量化实测，非目测。",
+    "sample": "MKTG0926-M-5961218-EXP0927（2026年9月，21页 A4 横向）",
+    "measured_colors": {
+      "brand_yellow": "#FFCE00",
+      "series_yellow_deep": "#FEDC00",
+      "series_red": "#FF4713",
+      "series_red_deep": "#E23E0F",
+      "series_burnt_orange": "#CD4119",
+      "series_orange_hot": "#FF3D06",
+      "series_dark_red": "#C00B28",
+      "series_green": "#008B5C",
+      "series_green_deep": "#007A51",
+      "series_purple_solid": "#9062BC",
+      "series_purple_line": "#9E79D9",
+      "fill_purple_tint": "#CFBCEC",
+      "series_pink": "#FC9BB3",
+      "fill_peach": "#FFB76D",
+      "fill_peach_tint": "#FFD3A5",
+      "fill_salmon_band": "#FFB5A1",
+      "fill_green_tint": "#80C5AE",
+      "fill_red_tint": "#FFA389",
+      "fill_pink_tint": "#FFD7CB",
+      "axis_gray": "#808080",
+      "card_gray": "#DCDCDC",
+      "gold_dark": "#896E00",
+      "gold_2": "#C49C04"
+    },
+    "fonts": {
+      "latin_display": "BLKFort-Extrabold / BLKFort-Bold",
+      "latin_body": "BLKFort-Book",
+      "latin_data": "BLKFortCond-Light",
+      "cjk_body": "NotoSansSC (Bold/Regular/Light)",
+      "cjk_cover_theme": "FZBeiWeiKaiShu-S19S（封面主题语书法体）",
+      "fallback": "BLKFort→Arial/Helvetica w800；书法体→STKaiti/KaiTi/serif；Cond→Arial Narrow"
+    },
+    "page_anatomy": "论点式大标题（判断句）→ 论据副标（1-2行）→ 左右双图面板 → 每面板「资料来源+注」；页脚三段：免责声明｜页码｜文件编号 MKTG…-N/21；封面整页 #FFCE00 铺底（实测 82.8%）",
+    "chart_gallery": [
+      "柱状+均线+阈值虚线", "多系列线图", "堆积柱+空心柱（假设值）", "多基准价格线",
+      "长周期占比堆积", "含负值堆积柱", "单线全宽", "对数尺度+趋势虚线+估计段",
+      "指数化多线（基准=100）", "信号面板表（状态徽章）", "OAS双系列", "2×2象限图",
+      "比率线", "月度柱", "Z-score条形", "七币种堆积柱",
+      "收益率曲线双日对比", "水平占比堆积+大数字", "双轴组合（柱+线右轴）", "到期墙前瞻堆积",
+      "交易额柱", "配置梯度图", "估计段线图", "IQR/十分位距分布",
+      "三栏驱动映射表（彩色主题卡）", "点阵量尺（低配/中性/超配+早期观点空心点）",
+      "双语气泡资产地图（中英对照）", "战术观点表"
+    ],
+    "conventions": [
+      "估计段：预测区上方置「估计」标签，浅色调或虚线边界",
+      "免责前缀三态：前瞻性估计可能不会实现 / 所示数据仅代表过往表现 / 仅供说明",
+      "资料来源句式：资料来源：贝莱德智库、[机构]，数据来自 [Haver Analytics|LSEG Datastream|彭博|PitchBook|Preqin|CBO|美联储|Dealogic|Aladdin]，YYYY年M月。",
+      "注释句式：注：图中线条/柱状图呈列的是…（含口径与指数代理）",
+      "图例置面板顶部横排；轴单位随轴竖排；指数化注明基准时点（=100）",
+      "符号语义：空心柱=假设值；虚线=估计/阈值；浅带=分位区间；实心点=现配置，空心点=早期观点",
+      "信号徽章两态：乐观（实底）/观察中（描边）"
+    ]
   },
 
   "geometry": {
